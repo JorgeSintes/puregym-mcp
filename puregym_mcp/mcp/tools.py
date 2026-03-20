@@ -1,0 +1,53 @@
+from __future__ import annotations
+
+from puregym_mcp.puregym.service import PureGymService
+
+
+def register_tools(mcp, service: PureGymService) -> None:
+    @mcp.tool()
+    async def get_capabilities() -> dict:
+        return {
+            "authenticated": service.is_authenticated,
+            "search_days_allowed": 28 if service.is_authenticated else 14,
+        }
+
+    @mcp.tool()
+    async def list_class_types() -> list[dict]:
+        groups = await service.list_class_types()
+        return [group.model_dump(mode="json") for group in groups]
+
+    @mcp.tool()
+    async def list_centers() -> list[dict]:
+        groups = await service.list_centers()
+        return [group.model_dump(mode="json") for group in groups]
+
+    @mcp.tool()
+    async def search_classes(
+        class_ids: list[int] | None = None,
+        center_ids: list[int] | None = None,
+        from_date: str | None = None,
+        to_date: str | None = None,
+    ) -> list[dict]:
+        classes = await service.search_classes(class_ids, center_ids, from_date, to_date)
+        return [gym_class.model_dump(mode="json") for gym_class in classes]
+
+    if not service.is_authenticated:
+        return
+
+    @mcp.tool()
+    async def list_my_bookings(
+        class_ids: list[int] | None = None,
+        center_ids: list[int] | None = None,
+        from_date: str | None = None,
+        to_date: str | None = None,
+    ) -> list[dict]:
+        classes = await service.list_my_bookings(class_ids, center_ids, from_date, to_date)
+        return [gym_class.model_dump(mode="json") for gym_class in classes]
+
+    @mcp.tool()
+    async def book_class(booking_id: str, activity_id: int, payment_type: str) -> dict:
+        return await service.book_class(booking_id, activity_id, payment_type)
+
+    @mcp.tool()
+    async def cancel_booking(participation_id: str) -> dict:
+        return await service.cancel_booking(participation_id)

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["uv_build>=0.10.6,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "puregym_mcp"
+module-root = ""
+
+[project]
+name = "puregym-mcp"
+version = "0.1.0"
+description = "PureGym client library and MCP server"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "httpx>=0.28.1",
+    "mcp>=1.0.0",
+    "pydantic>=2.12.0",
+]
+
+[project.scripts]
+puregym-mcp = "puregym_mcp.mcp.server:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "ruff>=0.15.7",
+]
+
+[tool.ruff]
+line-length = 110

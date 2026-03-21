@@ -52,6 +52,3 @@ def test_parse_dashboard_datetime_handles_relative_labels():
     assert parse_dashboard_datetime("I dag  08:00", today) == parse_dashboard_datetime(
         "2026-03-21 08:00", today
     )
-    assert parse_dashboard_datetime("I morgen 17:40", today) == parse_dashboard_datetime(
-        "2026-03-22 17:40", today
-    )

@@ -194,8 +194,6 @@ def parse_dashboard_datetime(raw_datetime: str, today: date | None = None) -> da
 
     if normalized.lower().startswith("i dag "):
         return datetime.combine(today, datetime.strptime(normalized[6:], "%H:%M").time())
-    if normalized.lower().startswith("i morgen "):
-        return datetime.combine(today + timedelta(days=1), datetime.strptime(normalized[9:], "%H:%M").time())
     return datetime.fromisoformat(normalized)
 
 

@@ -2,6 +2,14 @@
 
 PureGym client library and MCP server.
 
+## Setup
+
+Install dependencies:
+
+```bash
+uv sync --dev
+```
+
 ## What it provides
 
 - PureGym client and structured schemas with derived fields like waitlist position
@@ -21,10 +29,8 @@ PureGym client library and MCP server.
 
 ## Running locally
 
-From the workspace root:
-
 ```bash
-uv run --package puregym-mcp puregym-mcp
+uv run puregym-mcp
 ```
 
 Run in authenticated mode by providing credentials:
@@ -32,7 +38,14 @@ Run in authenticated mode by providing credentials:
 ```bash
 PUREGYM_USERNAME="your-email" \
 PUREGYM_PASSWORD="your-password" \
-uv run --package puregym-mcp puregym-mcp
+uv run puregym-mcp
+```
+
+## Test
+
+```bash
+uv run pytest
+uv run python -m compileall puregym_mcp tests
 ```
 
 ## Example MCP client config
@@ -44,7 +57,7 @@ Claude Desktop:
   "mcpServers": {
     "puregym": {
       "command": "uv",
-      "args": ["run", "--package", "puregym-mcp", "puregym-mcp"],
+      "args": ["run", "puregym-mcp"],
       "cwd": "/path/to/this/repo"
     }
   }
@@ -58,7 +71,7 @@ Authenticated Claude Desktop example:
   "mcpServers": {
     "puregym": {
       "command": "uv",
-      "args": ["run", "--package", "puregym-mcp", "puregym-mcp"],
+      "args": ["run", "puregym-mcp"],
       "cwd": "/path/to/this/repo",
       "env": {
         "PUREGYM_USERNAME": "your-email",
@@ -76,7 +89,7 @@ OpenCode example:
   "mcpServers": {
     "puregym": {
       "command": "uv",
-      "args": ["run", "--package", "puregym-mcp", "puregym-mcp"],
+      "args": ["run", "puregym-mcp"],
       "cwd": "/path/to/this/repo"
     }
   }

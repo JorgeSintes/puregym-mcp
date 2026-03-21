@@ -48,6 +48,35 @@ uv run pytest
 uv run python -m compileall puregym_mcp tests
 ```
 
+## Debug with MCP Inspector
+
+Launch the Inspector against this repo:
+
+```bash
+npx @modelcontextprotocol/inspector \
+  uv \
+  --directory /path/to/puregym-mcp \
+  run \
+  puregym-mcp
+```
+
+Launch it in authenticated mode:
+
+```bash
+npx @modelcontextprotocol/inspector \
+  -e PUREGYM_USERNAME=your-email \
+  -e PUREGYM_PASSWORD=your-password \
+  -- \
+  uv \
+  --directory /path/to/puregym-mcp \
+  run \
+  puregym-mcp
+```
+
+The Inspector UI opens at `http://localhost:6274`. Useful checks are `get_capabilities`, `search_classes`, and, in authenticated mode, `list_my_bookings`, `book_class`, and `cancel_booking`.
+
+Keep the Inspector bound to localhost and leave its auth enabled.
+
 ## Example MCP client config
 
 Claude Desktop:

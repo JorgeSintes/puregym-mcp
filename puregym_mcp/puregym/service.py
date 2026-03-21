@@ -4,8 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from puregym_mcp.puregym.client import PureGymClient
-from puregym_mcp.puregym.filters import filter_by_booked
-from puregym_mcp.puregym.schemas import CenterGroup, GymClass, GymClassTypesGroup
+from puregym_mcp.puregym.schemas import CenterGroup, DashboardBooking, GymClass, GymClassTypesGroup
 
 
 @dataclass(frozen=True)
@@ -57,22 +56,17 @@ class PureGymService:
         center_ids: list[int] | None = None,
         from_date: str | None = None,
         to_date: str | None = None,
-    ) -> list[GymClass]:
+    ) -> list[DashboardBooking]:
         if not self.is_authenticated:
             raise ValueError("Authenticated PureGym credentials are required to list bookings")
+        bookings = await self.client.get_my_bookings()
+        filtered = bookings
 
-        if class_ids is None:
-            class_ids = [option.value for group in await self.list_class_types() for option in group.options]
-        if center_ids is None:
-            center_ids = [option.value for group in await self.list_centers() for option in group.options]
-
-        classes = await self.search_classes(
-            class_ids=class_ids,
-            center_ids=center_ids,
-            from_date=from_date,
-            to_date=to_date,
-        )
-        return filter_by_booked(classes)
+        if from_date is not None:
+            filtered = [booking for booking in filtered if booking.date >= from_date]
+        if to_date is not None:
+            filtered = [booking for booking in filtered if booking.date <= to_date]
+        return filtered
 
     async def book_class(self, booking_id: str, activity_id: int, payment_type: str) -> dict:
         if not self.is_authenticated:

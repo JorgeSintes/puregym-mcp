@@ -1,4 +1,5 @@
 from datetime import datetime
+from types import SimpleNamespace
 
 import pytest
 
@@ -6,9 +7,10 @@ from puregym_mcp.puregym.service import PureGymService
 
 
 class FakeClient:
-    def __init__(self, *, has_credentials: bool, classes=None):
+    def __init__(self, *, has_credentials: bool, classes=None, bookings=None):
         self.has_credentials = has_credentials
         self.classes = classes or []
+        self.bookings = bookings or []
         self.search_calls: list[dict] = []
         self.book_calls: list[tuple[str, int, str]] = []
         self.cancel_calls: list[str] = []
@@ -22,6 +24,9 @@ class FakeClient:
     async def get_available_classes(self, **kwargs):
         self.search_calls.append(kwargs)
         return self.classes
+
+    async def get_my_bookings(self):
+        return self.bookings
 
     async def book_by_ids(self, booking_id: str, activity_id: int, payment_type: str):
         self.book_calls.append((booking_id, activity_id, payment_type))
@@ -83,3 +88,14 @@ async def test_book_and_cancel_delegate_to_client():
     assert cancelled["status"] == "success"
     assert client.book_calls == [("b-1", 11, "membership")]
     assert client.cancel_calls == ["pid-1"]
+
+
+@pytest.mark.asyncio
+async def test_list_my_bookings_uses_dashboard_bookings():
+    bookings = [SimpleNamespace(date="2026-03-23")]
+    client = FakeClient(has_credentials=True, bookings=bookings)
+    service = PureGymService(client)  # type: ignore[arg-type]
+
+    result = await service.list_my_bookings(from_date="2026-03-20", to_date="2026-03-30")
+
+    assert result == bookings

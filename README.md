@@ -33,12 +33,38 @@ uv sync --dev
 uv run puregym-mcp
 ```
 
+Pick a transport explicitly when needed:
+
+```bash
+uv run puregym-mcp --transport stdio
+uv run puregym-mcp --transport streamable-http --host 127.0.0.1 --port 8000
+uv run puregym-mcp --transport sse --host 127.0.0.1 --port 8000
+```
+
+Useful HTTP options:
+
+```bash
+uv run puregym-mcp \
+  --transport streamable-http \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --streamable-http-path /mcp
+```
+
 Run in authenticated mode by providing credentials:
 
 ```bash
 PUREGYM_USERNAME="your-email" \
 PUREGYM_PASSWORD="your-password" \
 uv run puregym-mcp
+```
+
+Authenticated HTTP example for private self-hosting:
+
+```bash
+PUREGYM_USERNAME="your-email" \
+PUREGYM_PASSWORD="your-password" \
+uv run puregym-mcp --transport streamable-http --host 127.0.0.1 --port 8000
 ```
 
 ## Test
@@ -56,8 +82,8 @@ Launch the Inspector against this repo:
 npx @modelcontextprotocol/inspector \
   uv \
   --directory /path/to/puregym-mcp \
-  run \
-  puregym-mcp
+   run \
+   puregym-mcp --transport stdio
 ```
 
 Launch it in authenticated mode:
@@ -69,8 +95,8 @@ npx @modelcontextprotocol/inspector \
   -- \
   uv \
   --directory /path/to/puregym-mcp \
-  run \
-  puregym-mcp
+   run \
+   puregym-mcp --transport stdio
 ```
 
 The Inspector UI opens at `http://localhost:6274`. Useful checks are `get_capabilities`, `search_classes`, and, in authenticated mode, `list_my_bookings`, `book_class`, and `cancel_booking`.
@@ -123,6 +149,62 @@ OpenCode example:
     }
   }
 }
+```
+
+## Hosting over HTTP
+
+For remote MCP clients that connect by URL, run the server with an HTTP transport:
+
+```bash
+uv run puregym-mcp --transport streamable-http --host 127.0.0.1 --port 8000
+```
+
+By default the streamable HTTP endpoint is exposed at `http://127.0.0.1:8000/mcp`.
+
+SSE is also supported if a client specifically requires it:
+
+```bash
+uv run puregym-mcp --transport sse --host 127.0.0.1 --port 8000
+```
+
+When deploying publicly:
+
+- prefer `streamable-http` unless your client only supports SSE
+- put the service behind HTTPS and a reverse proxy
+- keep authenticated mode private, since it exposes booking mutations for your account
+- use anonymous mode for public read-only hosting
+
+## Docker
+
+Build the image:
+
+```bash
+docker build -t puregym-mcp .
+```
+
+Run a public read-only server:
+
+```bash
+docker run --rm -p 8000:8000 puregym-mcp
+```
+
+Run a private authenticated server:
+
+```bash
+docker run --rm -p 8000:8000 \
+  -e PUREGYM_USERNAME=your-email \
+  -e PUREGYM_PASSWORD=your-password \
+  puregym-mcp
+```
+
+Override the default container transport or path when needed:
+
+```bash
+docker run --rm -p 8000:8000 puregym-mcp \
+  --transport sse \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --sse-path /sse
 ```
 
 ## Exposed tools

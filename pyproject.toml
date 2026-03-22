@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-puregym-mcp = "puregym_mcp.mcp.server:main"
+puregym-mcp = "puregym_mcp.mcp.cli:main"
 
 [dependency-groups]
 dev = [

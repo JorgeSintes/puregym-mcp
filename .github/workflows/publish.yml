@@ -1,11 +1,15 @@
-name: CI
+name: Publish
 
 on:
-  push:
+  release:
+    types: [published]
 
 jobs:
-  ci:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Check out repository
@@ -17,17 +21,8 @@ jobs:
       - name: Set up Python
         run: uv python install
 
-      - name: Sync dependencies
-        run: uv sync --dev
-
-      - name: Run Ruff
-        run: uv run ruff check .
-
-      - name: Run compileall
-        run: uv run python -m compileall puregym_mcp tests
-
-      - name: Run tests
-        run: uv run pytest
-
       - name: Build distributions
         run: uv build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

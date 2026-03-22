@@ -1,133 +1,71 @@
 # PureGym MCP
 
-PureGym client library and MCP server.
+`puregym-mcp` is a Python package that exposes PureGym data as an MCP server and a reusable client library.
 
-## Setup
+It supports two main modes:
 
-Install dependencies:
+- anonymous read-only access for class discovery
+- authenticated access for your bookings, booking creation, and cancellation
 
-```bash
-uv sync --dev
-```
+## Install
 
-## What it provides
-
-- PureGym client and structured schemas with derived fields like waitlist position
-- MCP tools for listing class types, centers, and searching classes
-- Optional authenticated mode for listing bookings, booking classes, and cancelling bookings
-
-## Modes
-
-- Anonymous mode
-  - enabled when `PUREGYM_USERNAME` and `PUREGYM_PASSWORD` are not set
-  - read-only tools only
-  - default search window is 14 days ahead
-- Authenticated mode
-  - enabled automatically when both `PUREGYM_USERNAME` and `PUREGYM_PASSWORD` are set
-  - booking management tools are also available
-  - default search window is 28 days ahead
-
-## Running locally
+Try it once without installing:
 
 ```bash
-uv run puregym-mcp
+uvx puregym-mcp --transport stdio
 ```
 
-Pick a transport explicitly when needed:
+Install it for regular use:
 
 ```bash
-uv run puregym-mcp --transport stdio
-uv run puregym-mcp --transport streamable-http --host 127.0.0.1 --port 8000
-uv run puregym-mcp --transport sse --host 127.0.0.1 --port 8000
+uv tool install puregym-mcp
 ```
 
-Useful HTTP options:
+Or install it as a normal Python package:
 
 ```bash
-uv run puregym-mcp \
-  --transport streamable-http \
-  --host 0.0.0.0 \
-  --port 8000 \
-  --streamable-http-path /mcp
+pip install puregym-mcp
 ```
 
-Run in authenticated mode by providing credentials:
+## Quickstart
+
+Run locally over stdio:
+
+```bash
+puregym-mcp --transport stdio
+```
+
+Run in authenticated mode by providing your own PureGym credentials:
 
 ```bash
 PUREGYM_USERNAME="your-email" \
 PUREGYM_PASSWORD="your-password" \
-uv run puregym-mcp
+puregym-mcp --transport stdio
 ```
 
-Authenticated HTTP example for private self-hosting:
+## MCP Client Config
 
-```bash
-PUREGYM_USERNAME="your-email" \
-PUREGYM_PASSWORD="your-password" \
-uv run puregym-mcp --transport streamable-http --host 127.0.0.1 --port 8000
-```
-
-## Test
-
-```bash
-uv run pytest
-uv run python -m compileall puregym_mcp tests
-```
-
-## Debug with MCP Inspector
-
-Launch the Inspector against this repo:
-
-```bash
-npx @modelcontextprotocol/inspector \
-  uv \
-  --directory /path/to/puregym-mcp \
-   run \
-   puregym-mcp --transport stdio
-```
-
-Launch it in authenticated mode:
-
-```bash
-npx @modelcontextprotocol/inspector \
-  -e PUREGYM_USERNAME=your-email \
-  -e PUREGYM_PASSWORD=your-password \
-  -- \
-  uv \
-  --directory /path/to/puregym-mcp \
-   run \
-   puregym-mcp --transport stdio
-```
-
-The Inspector UI opens at `http://localhost:6274`. Useful checks are `get_capabilities`, `search_classes`, and, in authenticated mode, `list_my_bookings`, `book_class`, and `cancel_booking`.
-
-Keep the Inspector bound to localhost and leave its auth enabled.
-
-## Example MCP client config
-
-Claude Desktop:
+OpenCode:
 
 ```json
 {
   "mcpServers": {
     "puregym": {
-      "command": "uv",
-      "args": ["run", "puregym-mcp"],
-      "cwd": "/path/to/this/repo"
+      "command": "puregym-mcp",
+      "args": ["--transport", "stdio"]
     }
   }
 }
 ```
 
-Authenticated Claude Desktop example:
+Authenticated OpenCode:
 
 ```json
 {
   "mcpServers": {
     "puregym": {
-      "command": "uv",
-      "args": ["run", "puregym-mcp"],
-      "cwd": "/path/to/this/repo",
+      "command": "puregym-mcp",
+      "args": ["--transport", "stdio"],
       "env": {
         "PUREGYM_USERNAME": "your-email",
         "PUREGYM_PASSWORD": "your-password"
@@ -137,34 +75,57 @@ Authenticated Claude Desktop example:
 }
 ```
 
-OpenCode example:
+VS Code user or workspace `mcp.json`:
 
 ```json
 {
-  "mcpServers": {
+  "servers": {
     "puregym": {
-      "command": "uv",
-      "args": ["run", "puregym-mcp"],
-      "cwd": "/path/to/this/repo"
+      "type": "stdio",
+      "command": "puregym-mcp",
+      "args": ["--transport", "stdio"]
     }
   }
 }
 ```
 
-## Hosting over HTTP
+## Modes
+
+- Anonymous mode
+  - enabled when `PUREGYM_USERNAME` and `PUREGYM_PASSWORD` are not set
+  - exposes read-only tools
+  - defaults to a 14-day search window
+- Authenticated mode
+  - enabled automatically when both PureGym credentials are set
+  - also exposes booking management tools
+  - defaults to a 28-day search window
+
+## Exposed Tools
+
+- Always available
+  - `get_capabilities`
+  - `list_class_types`
+  - `list_centers`
+  - `search_classes`
+- Authenticated only
+  - `list_my_bookings`
+  - `book_class`
+  - `cancel_booking`
+
+## HTTP Hosting
 
 For remote MCP clients that connect by URL, run the server with an HTTP transport:
 
 ```bash
-uv run puregym-mcp --transport streamable-http --host 127.0.0.1 --port 8000
+puregym-mcp --transport streamable-http --host 127.0.0.1 --port 8000
 ```
 
 By default the streamable HTTP endpoint is exposed at `http://127.0.0.1:8000/mcp`.
 
-SSE is also supported if a client specifically requires it:
+SSE is also supported when a client requires it:
 
 ```bash
-uv run puregym-mcp --transport sse --host 127.0.0.1 --port 8000
+puregym-mcp --transport sse --host 127.0.0.1 --port 8000
 ```
 
 When deploying publicly:
@@ -173,6 +134,17 @@ When deploying publicly:
 - put the service behind HTTPS and a reverse proxy
 - keep authenticated mode private, since it exposes booking mutations for your account
 - use anonymous mode for public read-only hosting
+
+## Python Library
+
+The package also exposes a reusable client and service layer:
+
+```python
+from puregym_mcp import PureGymClient, PureGymService
+
+client = PureGymClient()
+service = PureGymService(client)
+```
 
 ## Docker
 
@@ -207,14 +179,57 @@ docker run --rm -p 8000:8000 puregym-mcp \
   --sse-path /sse
 ```
 
-## Exposed tools
+## Development
 
-- Always available:
-  - `get_capabilities`
-  - `list_class_types`
-  - `list_centers`
-  - `search_classes`
-- Authenticated only:
-  - `list_my_bookings`
-  - `book_class`
-  - `cancel_booking`
+Clone the repo and install dev dependencies:
+
+```bash
+uv sync --dev
+```
+
+Run from source:
+
+```bash
+uv run puregym-mcp --transport stdio
+```
+
+Run checks:
+
+```bash
+uv run pytest
+uv run python -m compileall puregym_mcp tests
+uv build
+```
+
+Test the built package locally before publishing:
+
+```bash
+uvx --from dist/puregym_mcp-0.1.0-py3-none-any.whl puregym-mcp --transport stdio
+```
+
+## MCP Inspector
+
+Launch the Inspector against this repo:
+
+```bash
+npx @modelcontextprotocol/inspector \
+  uv \
+  --directory /path/to/puregym-mcp \
+  run \
+  puregym-mcp --transport stdio
+```
+
+Launch it in authenticated mode:
+
+```bash
+npx @modelcontextprotocol/inspector \
+  -e PUREGYM_USERNAME=your-email \
+  -e PUREGYM_PASSWORD=your-password \
+  -- \
+  uv \
+  --directory /path/to/puregym-mcp \
+  run \
+  puregym-mcp --transport stdio
+```
+
+The Inspector UI opens at `http://localhost:6274`.

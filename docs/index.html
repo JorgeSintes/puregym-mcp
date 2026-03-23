@@ -1,0 +1,354 @@
+<!doctype html>
+<html class="scroll-smooth" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PureGym MCP | Technical Documentation</title>
+    <meta
+      name="description"
+      content="Technical landing page for PureGym MCP, a Python package and MCP server for class discovery, booking lookup, and booking management."
+    >
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    >
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css"
+    >
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4d44e3",
+              "primary-dim": "#4034d7",
+              surface: "#ffffff",
+              "surface-soft": "#f8fafc",
+              "surface-muted": "#f1f5f9",
+              "on-surface": "#1a202c",
+              "on-surface-variant": "#4a5568",
+              "border-color": "#e2e8f0"
+            },
+            boxShadow: {
+              panel: "0 12px 30px rgba(15, 23, 42, 0.06)"
+            }
+          }
+        }
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        line-height: 1.6;
+      }
+
+      code,
+      pre {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
+        vertical-align: middle;
+      }
+
+      .prose-shell h2 {
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 0.65rem;
+        margin-top: 3rem;
+        margin-bottom: 1.25rem;
+        font-size: 1.55rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #0f172a;
+      }
+
+      .prose-shell h3 {
+        margin-top: 0;
+        margin-bottom: 0.65rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e293b;
+      }
+
+      .hljs {
+        background: transparent;
+        padding: 0;
+        color: inherit;
+      }
+
+      .copy-button[data-copied="true"] {
+        color: #818cf8;
+      }
+
+      pre code {
+        display: block;
+        white-space: pre;
+      }
+
+      pre code.language-bash {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body class="bg-surface text-on-surface antialiased">
+    <nav class="sticky top-0 z-50 w-full border-b border-border-color bg-white/90 backdrop-blur-sm">
+      <div class="mx-auto flex h-14 max-w-4xl items-center justify-between px-4 sm:px-6">
+        <div class="flex items-center gap-6">
+          <span class="text-base font-bold tracking-tight text-slate-900">PureGym MCP</span>
+          <div class="hidden items-center gap-5 md:flex">
+            <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#capabilities">Capabilities</a>
+            <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#quickstart">Quickstart</a>
+            <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#deployment">Remote Deployment</a>
+            <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#links">Links</a>
+          </div>
+        </div>
+        <a class="text-sm font-medium text-primary hover:underline" href="https://github.com/JorgeSintes/puregym-mcp" target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+    </nav>
+
+    <main class="prose-shell mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-12">
+      <header class="mb-12">
+        <div class="mb-4 flex flex-wrap items-center gap-3 text-xs">
+          <span class="rounded border border-slate-200 bg-slate-100 px-2 py-0.5 font-bold uppercase tracking-[0.16em] text-slate-600">v0.1.0</span>
+          <span class="text-slate-300">•</span>
+          <span class="text-slate-500">Hosted endpoint: <code class="rounded bg-slate-50 px-1 text-primary">/mcp</code></span>
+          <span class="text-slate-300">•</span>
+          <span class="text-slate-500">Python package + MCP server</span>
+        </div>
+
+        <h1 class="mb-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+          PureGym MCP server
+        </h1>
+
+        <p class="max-w-3xl text-lg leading-8 text-slate-600">
+          <code>puregym-mcp</code> is a Python package and Model Context Protocol server for browsing <a class="text-primary hover:underline" href="https://www.puregym.dk" target="_blank" rel="noreferrer">PureGym centers in Denmark</a>, discovering classes,
+          checking your bookings, and managing bookings through MCP-compatible clients such as <a class="text-primary hover:underline" href="https://opencode.ai" target="_blank" rel="noreferrer">OpenCode</a>, <a class="text-primary hover:underline" href="https://www.anthropic.com/claude-code" target="_blank" rel="noreferrer">Claude Code</a>, <a class="text-primary hover:underline" href="https://openclaw.ai/" target="_blank" rel="noreferrer">OpenClaw</a>, and <a class="text-primary hover:underline" href="https://code.visualstudio.com/" target="_blank" rel="noreferrer">VS Code</a>.
+        </p>
+
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <code class="rounded border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-50 shadow-panel">uvx puregym-mcp</code>
+          <a class="inline-flex items-center gap-2 rounded border border-border-color bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-primary hover:text-primary" href="https://pypi.org/project/puregym-mcp/" target="_blank" rel="noreferrer">
+            <span class="material-symbols-outlined text-[18px]">package_2</span>
+            PyPI package
+          </a>
+        </div>
+
+        <p class="mt-5 max-w-3xl text-sm leading-7 text-slate-500">
+          PureGym MCP is an independent third-party project and is not affiliated with, endorsed by, or sponsored by PureGym.
+          PureGym is a trademark of its respective owner.
+        </p>
+      </header>
+
+      <section id="capabilities">
+        <h2>Capabilities</h2>
+        <p class="text-slate-600">
+          The server exposes a compact set of tools for public class discovery and optional authenticated booking actions.
+        </p>
+
+        <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div>
+            <h3 class="flex items-center gap-2 text-lg">
+              <span class="material-symbols-outlined text-slate-400">search</span>
+              Class discovery
+            </h3>
+            <p class="mb-4 text-sm text-slate-600">Read-only tools available without PureGym credentials.</p>
+            <ul class="space-y-1 text-sm font-mono text-primary">
+              <li>• get_capabilities</li>
+              <li>• list_class_types</li>
+              <li>• list_centers</li>
+              <li>• search_classes</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="flex items-center gap-2 text-lg">
+              <span class="material-symbols-outlined text-slate-400">event_available</span>
+              Booking management
+            </h3>
+            <p class="mb-4 text-sm text-slate-600">Authenticated tools for your own account when credentials are configured.</p>
+            <ul class="space-y-1 text-sm font-mono text-primary">
+              <li>• list_my_bookings</li>
+              <li>• book_class</li>
+              <li>• cancel_booking</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-10 rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-panel">
+          <h3 class="mt-0 text-base font-bold text-slate-900">Modes</h3>
+          <p class="mb-3 text-sm leading-7 text-slate-600">
+            <strong>Anonymous mode</strong> is intended for public class discovery and exposes read-only tools with a 14-day
+            search window.
+          </p>
+          <p class="mb-0 text-sm leading-7 text-slate-600">
+            <strong>Authenticated mode</strong> is enabled when <code>PUREGYM_USERNAME</code> and <code>PUREGYM_PASSWORD</code>
+            are present. It unlocks booking tools and expands the default search window to 28 days.
+          </p>
+        </div>
+      </section>
+
+      <section id="quickstart">
+        <h2>Quickstart</h2>
+        <p class="text-slate-600">
+          The easiest path for most users today is local <code>stdio</code> usage from an MCP-compatible client:
+        </p>
+
+        <div class="my-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
+            <span class="text-xs font-mono text-slate-500">basic-config</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy install commands">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
+          </div>
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-json">{
+  "mcp": {
+    "puregym": {
+      "command": ["uvx", "puregym-mcp"],
+      // optional environment variables for authenticated features
+      "environment": {
+        "PUREGYM_USERNAME": "your-username",
+        "PUREGYM_PASSWORD": "your-password"
+      }
+    }
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <section id="deployment">
+        <h2>Remote Deployment</h2>
+        <p class="text-slate-600">
+          The server supports remote deployment over both <code>streamable-http</code> and <code>sse</code>. This allows it
+          to be exposed as a hosted MCP for remote clients and online LLM products that support custom MCP connections.
+        </p>
+
+        <div class="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-panel">
+          <h3 class="mb-2 text-base font-bold text-slate-900">Public read-only endpoint</h3>
+          <p class="mb-3 text-sm leading-7 text-slate-600">
+            A non-authenticated read-only deployment is currently available at
+            <a class="text-primary hover:underline" href="https://puregym-mcp.jorgesintes.dev/mcp" target="_blank" rel="noreferrer">https://puregym-mcp.jorgesintes.dev/mcp</a>.
+          </p>
+          <p class="mb-0 text-sm leading-7 text-slate-600">
+            This is the kind of remote deployment that enables services such as
+            <a class="text-primary hover:underline" href="https://chatgpt.com" target="_blank" rel="noreferrer">ChatGPT</a>,
+            <a class="text-primary hover:underline" href="https://claude.ai" target="_blank" rel="noreferrer">Claude</a>, and
+            <a class="text-primary hover:underline" href="https://mistral.ai" target="_blank" rel="noreferrer">Mistral</a>
+            to connect through custom MCP integrations when supported by their plans and client capabilities.
+          </p>
+        </div>
+
+        <div class="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-6 shadow-panel">
+          <h3 class="mb-2 text-base font-bold text-amber-900">Security warning</h3>
+          <p class="mb-3 text-sm leading-7 text-amber-900/90">
+            Do not expose a publicly reachable deployment configured with your personal PureGym credentials on an open port.
+            If a hosted MCP has booking permissions, anyone who can reach it may be able to act on your account unless the
+            deployment is protected properly.
+          </p>
+          <p class="mb-0 text-sm leading-7 text-amber-900/90">
+            Public hosting should stay anonymous and read-only unless access control is in place. Remote MCP clients are
+            increasingly adding authenticated server support, and I am currently working on making auth easier to configure
+            here as well. More documentation on that setup will be added soon.
+          </p>
+        </div>
+
+        <div class="mt-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
+            <span class="text-xs font-mono text-slate-500">streamable-http</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy streamable HTTP command">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
+          </div>
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">puregym-mcp --transport streamable-http --host 0.0.0.0 --port 8000 --streamable-http-path /mcp</code></pre>
+        </div>
+
+        <div class="mt-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
+            <span class="text-xs font-mono text-slate-500">sse</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy SSE command">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
+          </div>
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">puregym-mcp --transport sse --host 0.0.0.0 --port 8000 --sse-path /sse --message-path /messages/</code></pre>
+        </div>
+      </section>
+
+      <section id="links" class="mt-16 border-t border-slate-200 pt-10">
+        <div class="flex flex-wrap gap-x-8 gap-y-4 text-sm">
+          <a class="flex items-center gap-2 text-slate-600 transition-colors hover:text-primary" href="https://github.com/JorgeSintes/puregym-mcp" target="_blank" rel="noreferrer">
+            <span class="material-symbols-outlined text-base">code</span>
+            GitHub repository
+          </a>
+          <a class="flex items-center gap-2 text-slate-600 transition-colors hover:text-primary" href="https://pypi.org/project/puregym-mcp/" target="_blank" rel="noreferrer">
+            <span class="material-symbols-outlined text-base">package_2</span>
+            PyPI package
+          </a>
+          <a class="flex items-center gap-2 text-slate-600 transition-colors hover:text-primary" href="https://jorgesintes.dev" target="_blank" rel="noreferrer">
+            <span class="material-symbols-outlined text-base">language</span>
+            Personal website
+          </a>
+          <a class="flex items-center gap-2 text-slate-600 transition-colors hover:text-primary" href="https://github.com/JorgeSintes/puregym-bot" target="_blank" rel="noreferrer">
+            <span class="material-symbols-outlined text-base">chat</span>
+            Telegram bot
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="mt-20 border-t border-slate-200 bg-slate-50">
+      <div class="mx-auto flex max-w-4xl flex-col items-center justify-between gap-4 px-4 py-8 text-center sm:px-6 md:flex-row md:text-left">
+        <div>
+          <div class="text-xs text-slate-500">© 2026 PureGym MCP. Released under the MIT license.</div>
+          <div class="mt-1 text-xs text-slate-400">
+            Unofficial third-party project. Not affiliated with or endorsed by PureGym.
+          </div>
+        </div>
+        <div class="flex gap-6 text-xs text-slate-400">
+          <a class="hover:text-slate-600" href="https://github.com/JorgeSintes/puregym-mcp/issues" target="_blank" rel="noreferrer">Issues</a>
+          <a class="hover:text-slate-600" href="https://github.com/JorgeSintes/puregym-mcp/blob/main/CHANGELOG.md" target="_blank" rel="noreferrer">Changelog</a>
+        </div>
+      </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+
+      const copyButtons = document.querySelectorAll('.copy-button');
+
+      for (const button of copyButtons) {
+        button.addEventListener('click', async () => {
+          const container = button.closest('div.rounded-lg, div.overflow-hidden');
+          const codeElement = container?.querySelector('code');
+          if (!codeElement) {
+            return;
+          }
+
+          try {
+            await navigator.clipboard.writeText(codeElement.textContent ?? '');
+            button.dataset.copied = 'true';
+            const icon = button.querySelector('.material-symbols-outlined');
+            if (icon) {
+              icon.textContent = 'check';
+            }
+            window.setTimeout(() => {
+              button.dataset.copied = 'false';
+              if (icon) {
+                icon.textContent = 'content_copy';
+              }
+            }, 1600);
+          } catch (_error) {
+            button.dataset.copied = 'false';
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

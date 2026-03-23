@@ -17,6 +17,10 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
     >
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css"
+    >
     <script>
       tailwind.config = {
         theme: {
@@ -72,6 +76,27 @@
         font-weight: 700;
         color: #1e293b;
       }
+
+      .hljs {
+        background: transparent;
+        padding: 0;
+        color: inherit;
+      }
+
+      .copy-button[data-copied="true"] {
+        color: #818cf8;
+      }
+
+      pre code {
+        display: block;
+        white-space: pre;
+      }
+
+      pre code.language-bash {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
     </style>
   </head>
   <body class="bg-surface text-on-surface antialiased">
@@ -101,16 +126,16 @@
         </div>
 
         <h1 class="mb-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-          PureGym Model Context Protocol server
+          PureGym MCP server
         </h1>
 
         <p class="max-w-3xl text-lg leading-8 text-slate-600">
-          <code>puregym-mcp</code> is a Python package and MCP server for browsing PureGym centers, discovering classes,
+          <code>puregym-mcp</code> is a Python package and Model Context Protocol server for browsing <a class="text-primary hover:underline" href="https://www.puregym.dk" target="_blank" rel="noreferrer">PureGym centers in Denmark</a>, discovering classes,
           checking your bookings, and managing bookings through MCP-compatible clients such as OpenCode and VS Code.
         </p>
 
         <div class="mt-8 flex flex-wrap items-center gap-3">
-          <code class="rounded border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-50 shadow-panel">uvx puregym-mcp --transport stdio</code>
+          <code class="rounded border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-50 shadow-panel">uvx puregym-mcp</code>
           <a class="inline-flex items-center gap-2 rounded border border-border-color bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-primary hover:text-primary" href="https://pypi.org/project/puregym-mcp/" target="_blank" rel="noreferrer">
             <span class="material-symbols-outlined text-[18px]">package_2</span>
             PyPI package
@@ -175,16 +200,22 @@
         <div class="my-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
             <span class="text-xs font-mono text-slate-500">install</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy install commands">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
           </div>
-          <pre class="m-0 overflow-x-auto bg-slate-50 p-5 text-sm text-slate-800"><code>uv tool install puregym-mcp
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">uv tool install puregym-mcp
 uvx puregym-mcp --transport stdio</code></pre>
         </div>
 
         <div class="my-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
             <span class="text-xs font-mono text-slate-500">authenticated-local-run</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy authenticated local run command">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
           </div>
-          <pre class="m-0 overflow-x-auto bg-slate-50 p-5 text-sm text-slate-800"><code>PUREGYM_USERNAME="your-email" \
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">PUREGYM_USERNAME="your-email" \
 PUREGYM_PASSWORD="your-password" \
 puregym-mcp --transport stdio</code></pre>
         </div>
@@ -201,7 +232,12 @@ puregym-mcp --transport stdio</code></pre>
           <div>
             <h3 class="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">OpenCode / Claude Desktop style config</h3>
             <div class="rounded-lg bg-slate-900 p-5 shadow-panel">
-              <pre class="m-0 overflow-x-auto text-xs leading-6 text-slate-300"><code>{
+              <div class="mb-3 flex justify-end">
+                <button class="copy-button text-slate-400 transition-colors hover:text-slate-200" type="button" aria-label="Copy OpenCode configuration">
+                  <span class="material-symbols-outlined text-sm">content_copy</span>
+                </button>
+              </div>
+              <pre class="m-0 overflow-x-auto text-xs leading-6 text-slate-300"><code class="language-json">{
   "mcpServers": {
     "puregym": {
       "command": "puregym-mcp",
@@ -219,7 +255,12 @@ puregym-mcp --transport stdio</code></pre>
           <div>
             <h3 class="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">VS Code mcp.json</h3>
             <div class="rounded-lg bg-slate-900 p-5 shadow-panel">
-              <pre class="m-0 overflow-x-auto text-xs leading-6 text-slate-300"><code>{
+              <div class="mb-3 flex justify-end">
+                <button class="copy-button text-slate-400 transition-colors hover:text-slate-200" type="button" aria-label="Copy VS Code configuration">
+                  <span class="material-symbols-outlined text-sm">content_copy</span>
+                </button>
+              </div>
+              <pre class="m-0 overflow-x-auto text-xs leading-6 text-slate-300"><code class="language-json">{
   "servers": {
     "puregym": {
       "type": "stdio",
@@ -243,8 +284,11 @@ puregym-mcp --transport stdio</code></pre>
         <div class="mt-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
             <span class="text-xs font-mono text-slate-500">streamable-http</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy streamable HTTP command">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
           </div>
-          <pre class="m-0 overflow-x-auto bg-slate-50 p-5 text-sm text-slate-800"><code>puregym-mcp --transport streamable-http --host 0.0.0.0 --port 8000 --streamable-http-path /mcp</code></pre>
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">puregym-mcp --transport streamable-http --host 0.0.0.0 --port 8000 --streamable-http-path /mcp</code></pre>
         </div>
       </section>
 
@@ -279,5 +323,38 @@ puregym-mcp --transport stdio</code></pre>
         </div>
       </div>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+
+      const copyButtons = document.querySelectorAll('.copy-button');
+
+      for (const button of copyButtons) {
+        button.addEventListener('click', async () => {
+          const container = button.closest('div.rounded-lg, div.overflow-hidden');
+          const codeElement = container?.querySelector('code');
+          if (!codeElement) {
+            return;
+          }
+
+          try {
+            await navigator.clipboard.writeText(codeElement.textContent ?? '');
+            button.dataset.copied = 'true';
+            const icon = button.querySelector('.material-symbols-outlined');
+            if (icon) {
+              icon.textContent = 'check';
+            }
+            window.setTimeout(() => {
+              button.dataset.copied = 'false';
+              if (icon) {
+                icon.textContent = 'content_copy';
+              }
+            }, 1600);
+          } catch (_error) {
+            button.dataset.copied = 'false';
+          }
+        });
+      }
+    </script>
   </body>
 </html>

@@ -3,6 +3,7 @@
 `puregym-mcp` is a Python package that exposes PureGym data as an MCP server and a reusable client library.
 
 This is an independent third-party project and is not affiliated with, endorsed by, or sponsored by PureGym.
+PureGym is a registered trademark of Pure Gym Limited.
 
 It supports two main modes:
 

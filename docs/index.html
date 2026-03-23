@@ -227,9 +227,38 @@
       <section id="deployment">
         <h2>Remote Deployment</h2>
         <p class="text-slate-600">
-          For self-hosted remote usage, run the server over streamable HTTP and expose it at a stable URL. The endpoint on
-          this host is available at <code>https://mcp.jorgesintes.dev/mcp</code>.
+          The server supports remote deployment over both <code>streamable-http</code> and <code>sse</code>. This allows it
+          to be exposed as a hosted MCP for remote clients and online LLM products that support custom MCP connections.
         </p>
+
+        <div class="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-panel">
+          <h3 class="mb-2 text-base font-bold text-slate-900">Public read-only endpoint</h3>
+          <p class="mb-3 text-sm leading-7 text-slate-600">
+            A non-authenticated read-only deployment is currently available at
+            <a class="text-primary hover:underline" href="https://puregym-mcp.jorgesintes.dev/mcp" target="_blank" rel="noreferrer">https://puregym-mcp.jorgesintes.dev/mcp</a>.
+          </p>
+          <p class="mb-0 text-sm leading-7 text-slate-600">
+            This is the kind of remote deployment that enables services such as
+            <a class="text-primary hover:underline" href="https://chatgpt.com" target="_blank" rel="noreferrer">ChatGPT</a>,
+            <a class="text-primary hover:underline" href="https://claude.ai" target="_blank" rel="noreferrer">Claude</a>, and
+            <a class="text-primary hover:underline" href="https://mistral.ai" target="_blank" rel="noreferrer">Mistral</a>
+            to connect through custom MCP integrations when supported by their plans and client capabilities.
+          </p>
+        </div>
+
+        <div class="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-6 shadow-panel">
+          <h3 class="mb-2 text-base font-bold text-amber-900">Security warning</h3>
+          <p class="mb-3 text-sm leading-7 text-amber-900/90">
+            Do not expose a publicly reachable deployment configured with your personal PureGym credentials on an open port.
+            If a hosted MCP has booking permissions, anyone who can reach it may be able to act on your account unless the
+            deployment is protected properly.
+          </p>
+          <p class="mb-0 text-sm leading-7 text-amber-900/90">
+            Public hosting should stay anonymous and read-only unless access control is in place. Remote MCP clients are
+            increasingly adding authenticated server support, and I am currently working on making auth easier to configure
+            here as well. More documentation on that setup will be added soon.
+          </p>
+        </div>
 
         <div class="mt-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
@@ -239,6 +268,16 @@
             </button>
           </div>
           <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">puregym-mcp --transport streamable-http --host 0.0.0.0 --port 8000 --streamable-http-path /mcp</code></pre>
+        </div>
+
+        <div class="mt-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
+            <span class="text-xs font-mono text-slate-500">sse</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy SSE command">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
+          </div>
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">puregym-mcp --transport sse --host 0.0.0.0 --port 8000 --sse-path /sse --message-path /messages/</code></pre>
         </div>
       </section>
 

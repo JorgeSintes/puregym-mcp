@@ -5,6 +5,11 @@
 This is an independent third-party project and is not affiliated with, endorsed by, or sponsored by PureGym.
 PureGym is a registered trademark of Pure Gym Limited.
 
+Hosted docs and public read-only endpoint:
+
+- Docs: [puregym-mcp.jorgesintes.dev](https://puregym-mcp.jorgesintes.dev)
+- MCP endpoint: copy `https://puregym-mcp.jorgesintes.dev/mcp` into your MCP client configuration
+
 It supports two main modes:
 
 - anonymous read-only access for class discovery

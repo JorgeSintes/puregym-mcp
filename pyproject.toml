@@ -36,7 +36,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yorch/puregym-mcp"
+Homepage = "https://puregym-mcp.jorgesintes.dev"
 Repository = "https://github.com/yorch/puregym-mcp"
 Issues = "https://github.com/yorch/puregym-mcp/issues"
 Changelog = "https://github.com/yorch/puregym-mcp/blob/main/CHANGELOG.md"

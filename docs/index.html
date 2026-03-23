@@ -107,7 +107,7 @@
           <div class="hidden items-center gap-5 md:flex">
             <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#capabilities">Capabilities</a>
             <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#quickstart">Quickstart</a>
-            <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#configuration">Configuration</a>
+            <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#deployment">Remote Deployment</a>
             <a class="text-sm font-medium text-slate-600 transition-colors hover:text-primary" href="#links">Links</a>
           </div>
         </div>
@@ -131,7 +131,7 @@
 
         <p class="max-w-3xl text-lg leading-8 text-slate-600">
           <code>puregym-mcp</code> is a Python package and Model Context Protocol server for browsing <a class="text-primary hover:underline" href="https://www.puregym.dk" target="_blank" rel="noreferrer">PureGym centers in Denmark</a>, discovering classes,
-          checking your bookings, and managing bookings through MCP-compatible clients such as OpenCode and VS Code.
+          checking your bookings, and managing bookings through MCP-compatible clients such as <a class="text-primary hover:underline" href="https://opencode.ai" target="_blank" rel="noreferrer">OpenCode</a>, <a class="text-primary hover:underline" href="https://www.anthropic.com/claude-code" target="_blank" rel="noreferrer">Claude Code</a>, <a class="text-primary hover:underline" href="https://openclaw.ai/" target="_blank" rel="noreferrer">OpenClaw</a>, and <a class="text-primary hover:underline" href="https://code.visualstudio.com/" target="_blank" rel="noreferrer">VS Code</a>.
         </p>
 
         <div class="mt-8 flex flex-wrap items-center gap-3">
@@ -141,6 +141,11 @@
             PyPI package
           </a>
         </div>
+
+        <p class="mt-5 max-w-3xl text-sm leading-7 text-slate-500">
+          PureGym MCP is an independent third-party project and is not affiliated with, endorsed by, or sponsored by PureGym.
+          PureGym is a trademark of its respective owner.
+        </p>
       </header>
 
       <section id="capabilities">
@@ -194,88 +199,33 @@
       <section id="quickstart">
         <h2>Quickstart</h2>
         <p class="text-slate-600">
-          The easiest path for most users today is local <code>stdio</code> usage from an MCP-compatible client.
+          The easiest path for most users today is local <code>stdio</code> usage from an MCP-compatible client:
         </p>
 
         <div class="my-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
-            <span class="text-xs font-mono text-slate-500">install</span>
+            <span class="text-xs font-mono text-slate-500">basic-config</span>
             <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy install commands">
               <span class="material-symbols-outlined text-sm">content_copy</span>
             </button>
           </div>
-          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">uv tool install puregym-mcp
-uvx puregym-mcp --transport stdio</code></pre>
-        </div>
-
-        <div class="my-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
-            <span class="text-xs font-mono text-slate-500">authenticated-local-run</span>
-            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy authenticated local run command">
-              <span class="material-symbols-outlined text-sm">content_copy</span>
-            </button>
-          </div>
-          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">PUREGYM_USERNAME="your-email" \
-PUREGYM_PASSWORD="your-password" \
-puregym-mcp --transport stdio</code></pre>
-        </div>
-      </section>
-
-      <section id="configuration">
-        <h2>MCP Configuration</h2>
-        <p class="mb-6 text-slate-600">
-          Add the server to your MCP client configuration with a simple stdio command. Remote HTTP clients can use the hosted
-          endpoint at <code>/mcp</code>.
-        </p>
-
-        <div class="space-y-8">
-          <div>
-            <h3 class="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">OpenCode / Claude Desktop style config</h3>
-            <div class="rounded-lg bg-slate-900 p-5 shadow-panel">
-              <div class="mb-3 flex justify-end">
-                <button class="copy-button text-slate-400 transition-colors hover:text-slate-200" type="button" aria-label="Copy OpenCode configuration">
-                  <span class="material-symbols-outlined text-sm">content_copy</span>
-                </button>
-              </div>
-              <pre class="m-0 overflow-x-auto text-xs leading-6 text-slate-300"><code class="language-json">{
-  "mcpServers": {
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-json">{
+  "mcp": {
     "puregym": {
-      "command": "puregym-mcp",
-      "args": ["--transport", "stdio"],
-      "env": {
-        "PUREGYM_USERNAME": "your-email",
+      "command": ["uvx", "puregym-mcp"],
+      // optional environment variables for authenticated features
+      "environment": {
+        "PUREGYM_USERNAME": "your-username",
         "PUREGYM_PASSWORD": "your-password"
       }
     }
   }
 }</code></pre>
-            </div>
-          </div>
-
-          <div>
-            <h3 class="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">VS Code mcp.json</h3>
-            <div class="rounded-lg bg-slate-900 p-5 shadow-panel">
-              <div class="mb-3 flex justify-end">
-                <button class="copy-button text-slate-400 transition-colors hover:text-slate-200" type="button" aria-label="Copy VS Code configuration">
-                  <span class="material-symbols-outlined text-sm">content_copy</span>
-                </button>
-              </div>
-              <pre class="m-0 overflow-x-auto text-xs leading-6 text-slate-300"><code class="language-json">{
-  "servers": {
-    "puregym": {
-      "type": "stdio",
-      "command": "puregym-mcp",
-      "args": ["--transport", "stdio"]
-    }
-  }
-}</code></pre>
-            </div>
-          </div>
         </div>
       </section>
 
       <section id="deployment">
-        <h2>Deployment</h2>
+        <h2>Remote Deployment</h2>
         <p class="text-slate-600">
           For self-hosted remote usage, run the server over streamable HTTP and expose it at a stable URL. The endpoint on
           this host is available at <code>https://mcp.jorgesintes.dev/mcp</code>.
@@ -316,7 +266,12 @@ puregym-mcp --transport stdio</code></pre>
 
     <footer class="mt-20 border-t border-slate-200 bg-slate-50">
       <div class="mx-auto flex max-w-4xl flex-col items-center justify-between gap-4 px-4 py-8 text-center sm:px-6 md:flex-row md:text-left">
-        <div class="text-xs text-slate-500">© 2026 PureGym MCP. Released under the MIT license.</div>
+        <div>
+          <div class="text-xs text-slate-500">© 2026 PureGym MCP. Released under the MIT license.</div>
+          <div class="mt-1 text-xs text-slate-400">
+            Unofficial third-party project. Not affiliated with or endorsed by PureGym.
+          </div>
+        </div>
         <div class="flex gap-6 text-xs text-slate-400">
           <a class="hover:text-slate-600" href="https://github.com/JorgeSintes/puregym-mcp/issues" target="_blank" rel="noreferrer">Issues</a>
           <a class="hover:text-slate-600" href="https://github.com/JorgeSintes/puregym-mcp/blob/main/CHANGELOG.md" target="_blank" rel="noreferrer">Changelog</a>

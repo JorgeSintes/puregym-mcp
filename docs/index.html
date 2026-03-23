@@ -239,7 +239,15 @@
           <h3 class="mb-2 text-base font-bold text-slate-900">Public read-only endpoint</h3>
           <p class="mb-3 text-sm leading-7 text-slate-600">
             A non-authenticated read-only deployment is currently available at
-            <a class="text-primary hover:underline" href="https://puregym-mcp.jorgesintes.dev/mcp" target="_blank" rel="noreferrer">https://puregym-mcp.jorgesintes.dev/mcp</a>.
+            <button
+              class="copy-button inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-2 py-1 font-mono text-xs text-primary transition-colors hover:border-primary hover:text-primary"
+              type="button"
+              data-copy-text="https://puregym-mcp.jorgesintes.dev/mcp"
+              aria-label="Copy hosted MCP endpoint"
+            >
+              <span>https://puregym-mcp.jorgesintes.dev/mcp</span>
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
           </p>
           <p class="mb-0 text-sm leading-7 text-slate-600">
             This is the kind of remote deployment that enables services such as
@@ -334,14 +342,16 @@
 
       for (const button of copyButtons) {
         button.addEventListener('click', async () => {
+          const copyText = button.dataset.copyText;
           const container = button.closest('div.rounded-lg, div.overflow-hidden');
-          const codeElement = container?.querySelector('code');
-          if (!codeElement) {
+          const codeElement = copyText ? null : container?.querySelector('code');
+          const textToCopy = copyText ?? codeElement?.textContent ?? '';
+          if (!textToCopy) {
             return;
           }
 
           try {
-            await navigator.clipboard.writeText(codeElement.textContent ?? '');
+            await navigator.clipboard.writeText(textToCopy);
             button.dataset.copied = 'true';
             const icon = button.querySelector('.material-symbols-outlined');
             if (icon) {

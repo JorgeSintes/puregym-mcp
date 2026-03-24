@@ -1,81 +1,52 @@
 # PureGym MCP
 
-`puregym-mcp` is a Python package that exposes PureGym data as an MCP server and a reusable client library.
+`puregym-mcp` is a Python package and Model Context Protocol server for browsing PureGym centers in Denmark, discovering classes, checking your bookings, and managing bookings from MCP-compatible clients.
 
-This is an independent third-party project and is not affiliated with, endorsed by, or sponsored by PureGym.
-PureGym is a registered trademark of Pure Gym Limited.
-
-Hosted docs and public read-only endpoint:
+This is an independent third-party project and is not affiliated with, endorsed by, or sponsored by PureGym. PureGym is a registered trademark of Pure Gym Limited.
 
 - Docs: [puregym-mcp.jorgesintes.dev](https://puregym-mcp.jorgesintes.dev)
-- MCP endpoint: copy `https://puregym-mcp.jorgesintes.dev/mcp` into your MCP client configuration
+- Public read-only endpoint: `https://puregym-mcp.jorgesintes.dev/mcp`
+- PyPI: [puregym-mcp](https://pypi.org/project/puregym-mcp/)
 
-It supports two main modes:
+## Capabilities
 
-- anonymous read-only access for class discovery
-- authenticated access for your bookings, booking creation, and cancellation
+The server exposes a small set of tools for public class discovery and optional authenticated booking actions.
 
-## Install
+### Class discovery
 
-Try it once without installing:
+Available without PureGym credentials:
 
-```bash
-uvx puregym-mcp --transport stdio
-```
+- `get_capabilities`
+- `list_class_types`
+- `list_centers`
+- `search_classes`
 
-Install it for regular use:
+### Booking management
 
-```bash
-uv tool install puregym-mcp
-```
+Available when `PUREGYM_USERNAME` and `PUREGYM_PASSWORD` are configured:
 
-Or install it as a normal Python package:
+- `list_my_bookings`
+- `book_class`
+- `cancel_booking`
 
-```bash
-pip install puregym-mcp
-```
+## Modes
+
+- `Anonymous mode` exposes read-only tools and uses a 14-day search window.
+- `Authenticated mode` unlocks booking tools and expands the default search window to 28 days.
 
 ## Quickstart
 
-Run locally over stdio:
-
-```bash
-puregym-mcp --transport stdio
-```
-
-Run in authenticated mode by providing your own PureGym credentials:
-
-```bash
-PUREGYM_USERNAME="your-email" \
-PUREGYM_PASSWORD="your-password" \
-puregym-mcp --transport stdio
-```
-
-## MCP Client Config
-
-OpenCode:
+For most users, the easiest setup is local `stdio` usage from an MCP-compatible client:
 
 ```json
 {
-  "mcpServers": {
+  "mcp": {
     "puregym": {
-      "command": "puregym-mcp",
-      "args": ["--transport", "stdio"]
-    }
-  }
-}
-```
-
-Authenticated OpenCode:
-
-```json
-{
-  "mcpServers": {
-    "puregym": {
-      "command": "puregym-mcp",
-      "args": ["--transport", "stdio"],
-      "env": {
-        "PUREGYM_USERNAME": "your-email",
+      "enabled": true,
+      "type": "local",
+      "command": ["uvx", "puregym-mcp"],
+      "environment": {
+        "PUREGYM_USERNAME": "your-username",
         "PUREGYM_PASSWORD": "your-password"
       }
     }
@@ -83,65 +54,31 @@ Authenticated OpenCode:
 }
 ```
 
-VS Code user or workspace `mcp.json`:
+The environment block is optional and only needed for authenticated features.
 
-```json
-{
-  "servers": {
-    "puregym": {
-      "type": "stdio",
-      "command": "puregym-mcp",
-      "args": ["--transport", "stdio"]
-    }
-  }
-}
-```
+## Remote Deployment
 
-## Modes
+The server supports both `streamable-http` and `sse` for remote MCP clients.
 
-- Anonymous mode
-  - enabled when `PUREGYM_USERNAME` and `PUREGYM_PASSWORD` are not set
-  - exposes read-only tools
-  - defaults to a 14-day search window
-- Authenticated mode
-  - enabled automatically when both PureGym credentials are set
-  - also exposes booking management tools
-  - defaults to a 28-day search window
+Public read-only hosting:
 
-## Exposed Tools
+- Hosted endpoint: `https://puregym-mcp.jorgesintes.dev/mcp`
+- Prefer anonymous mode for public deployments.
 
-- Always available
-  - `get_capabilities`
-  - `list_class_types`
-  - `list_centers`
-  - `search_classes`
-- Authenticated only
-  - `list_my_bookings`
-  - `book_class`
-  - `cancel_booking`
+Security note:
 
-## HTTP Hosting
+- Do not expose a publicly reachable deployment configured with your personal PureGym credentials.
+- Keep authenticated deployments private unless you have proper access control in front of them.
 
-For remote MCP clients that connect by URL, run the server with an HTTP transport:
+Example commands:
 
 ```bash
-puregym-mcp --transport streamable-http --host 127.0.0.1 --port 8000
+puregym-mcp --transport streamable-http --host 0.0.0.0 --port 8000 --streamable-http-path /mcp
 ```
-
-By default the streamable HTTP endpoint is exposed at `http://127.0.0.1:8000/mcp`.
-
-SSE is also supported when a client requires it:
 
 ```bash
-puregym-mcp --transport sse --host 127.0.0.1 --port 8000
+puregym-mcp --transport sse --host 0.0.0.0 --port 8000 --sse-path /sse --message-path /messages/
 ```
-
-When deploying publicly:
-
-- prefer `streamable-http` unless your client only supports SSE
-- put the service behind HTTPS and a reverse proxy
-- keep authenticated mode private, since it exposes booking mutations for your account
-- use anonymous mode for public read-only hosting
 
 ## Python Library
 

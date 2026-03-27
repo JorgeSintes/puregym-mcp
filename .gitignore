@@ -12,3 +12,4 @@ wheels/
 .vscode
 .api_test/
 opencode.jsonc
+debug.py

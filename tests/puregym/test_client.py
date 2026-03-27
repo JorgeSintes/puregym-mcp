@@ -1,6 +1,6 @@
 import pytest
 
-from puregym_mcp.puregym.api_schemas import ApiBookedClass, ApiDataEnvelope, ApiSearchClass
+from puregym_mcp.puregym.api_schemas import ApiBookedClass, ApiSearchClass
 from puregym_mcp.puregym.client import PureGymClient
 from puregym_mcp.puregym.models import GymClass
 

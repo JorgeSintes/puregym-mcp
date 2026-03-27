@@ -45,7 +45,7 @@ def register_tools(mcp, service: PureGymService) -> None:
         from_date: str | None = None,
         to_date: str | None = None,
     ) -> list[dict]:
-        """List your current booked and waitlisted classes from the PureGym dashboard."""
+        """List your current booked and waitlisted classes from your PureGym account."""
         classes = await service.list_my_bookings(class_ids, center_ids, from_date, to_date)
         return [gym_class.model_dump(mode="json") for gym_class in classes]
 
@@ -58,3 +58,15 @@ def register_tools(mcp, service: PureGymService) -> None:
     async def cancel_booking(participation_id: str) -> dict:
         """Cancel an existing booking or waitlist entry using its participation id."""
         return await service.cancel_booking(participation_id)
+
+    @mcp.tool()
+    async def get_center_live_status(center_id: int) -> dict:
+        """Return current occupancy and busy-hours data for a PureGym center."""
+        status = await service.get_center_live_status(center_id)
+        return status.model_dump(mode="json")
+
+    @mcp.tool()
+    async def get_center_open_hours(center_id: int) -> list[dict]:
+        """Return opening and staffed hours for a PureGym center."""
+        hours = await service.get_center_open_hours(center_id)
+        return [entry.model_dump(mode="json") for entry in hours]

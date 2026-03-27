@@ -39,6 +39,12 @@ class FakeClient:
     async def aclose(self):
         return None
 
+    async def get_center_live_status(self, center_id: int):
+        return {"center_id": center_id}
+
+    async def get_center_open_hours(self, center_id: int):
+        return [{"center_id": center_id}]
+
 
 @pytest.mark.asyncio
 async def test_search_classes_uses_anonymous_default_range():
@@ -99,3 +105,14 @@ async def test_list_my_bookings_uses_dashboard_bookings():
     result = await service.list_my_bookings(from_date="2026-03-20", to_date="2026-03-30")
 
     assert result == bookings
+
+
+@pytest.mark.asyncio
+async def test_center_status_tools_require_authenticated_mode():
+    service = PureGymService(FakeClient(has_credentials=False))  # type: ignore[arg-type]
+
+    with pytest.raises(ValueError, match="Authenticated PureGym credentials"):
+        await service.get_center_live_status(123)
+
+    with pytest.raises(ValueError, match="Authenticated PureGym credentials"):
+        await service.get_center_open_hours(123)

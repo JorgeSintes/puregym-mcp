@@ -4,7 +4,13 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from puregym_mcp.puregym.client import PureGymClient
-from puregym_mcp.puregym.schemas import CenterGroup, DashboardBooking, GymClass, GymClassTypesGroup
+from puregym_mcp.puregym.models import (
+    CenterGroup,
+    CenterLiveStatus,
+    CenterOpeningHours,
+    GymClass,
+    GymClassTypesGroup,
+)
 
 
 @dataclass(frozen=True)
@@ -56,7 +62,7 @@ class PureGymService:
         center_ids: list[int] | None = None,
         from_date: str | None = None,
         to_date: str | None = None,
-    ) -> list[DashboardBooking]:
+    ) -> list[GymClass]:
         if not self.is_authenticated:
             raise ValueError("Authenticated PureGym credentials are required to list bookings")
         bookings = await self.client.get_my_bookings()
@@ -77,6 +83,16 @@ class PureGymService:
         if not self.is_authenticated:
             raise ValueError("Authenticated PureGym credentials are required to cancel bookings")
         return await self.client.unbook_participation(participation_id)
+
+    async def get_center_live_status(self, center_id: int) -> CenterLiveStatus:
+        if not self.is_authenticated:
+            raise ValueError("Authenticated PureGym credentials are required to inspect center live status")
+        return await self.client.get_center_live_status(center_id)
+
+    async def get_center_open_hours(self, center_id: int) -> list[CenterOpeningHours]:
+        if not self.is_authenticated:
+            raise ValueError("Authenticated PureGym credentials are required to inspect center open hours")
+        return await self.client.get_center_open_hours(center_id)
 
     async def aclose(self) -> None:
         await self.client.aclose()

@@ -10,4 +10,5 @@ wheels/
 .env
 .venv
 .vscode
+.api_test/
 opencode.jsonc

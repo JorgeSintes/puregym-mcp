@@ -28,6 +28,8 @@ Available when `PUREGYM_USERNAME` and `PUREGYM_PASSWORD` are configured:
 - `list_my_bookings`
 - `book_class`
 - `cancel_booking`
+- `get_center_live_status` - Real-time occupancy and capacity data
+- `get_center_open_hours` - Opening and staffed hours for a center
 
 ## Modes
 
@@ -149,7 +151,7 @@ uv build
 Test the built package locally before publishing:
 
 ```bash
-uvx --from dist/puregym_mcp-0.1.0-py3-none-any.whl puregym-mcp --transport stdio
+uvx --from dist/puregym_mcp-0.2.0-py3-none-any.whl puregym-mcp --transport stdio
 ```
 
 ## MCP Inspector

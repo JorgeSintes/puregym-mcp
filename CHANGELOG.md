@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0
+
+- **BREAKING**: `book_class` and `cancel_booking` MCP tools now return snake_case field names (`participation_id` instead of `participationId`)
+- Add typed response models for book/cancel operations (`BookClassResult`, `CancelBookingResponse`)
+- Add API response schemas (`ApiBookClassResponse`, `ApiCancelBookingResponse`) for validation
+- Fix schema compatibility: `ApiCenterStats.id` and `ApiCenterSummary.id` are now optional
+- Fix schema compatibility: `ApiSearchClass.participation` now accepts both string and object formats
+- Add real API integration tests (`tests/real_api`) for live endpoint validation
+- Add configurable HTTP timeout to `PureGymClient`
+
 ## 0.2.0
 
 - migrate authenticated booking, search, and mutation flows to the discovered `mit.puregym.dk` app API

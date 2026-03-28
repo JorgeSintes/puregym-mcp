@@ -8,7 +8,7 @@ module-root = ""
 
 [project]
 name = "puregym-mcp"
-version = "0.2.0"
+version = "0.3.0"
 description = "PureGym Python client and MCP server for class discovery and booking management"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -56,7 +56,7 @@ dev = [
 line-length = 110
 
 [tool.pytest.ini_options]
-addopts = ["-v"]
+addopts = ["-v", "-m", "not real_api"]
 markers = [
     "real_api: marks tests that run against the real PureGym API (requires credentials)",
 ]

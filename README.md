@@ -36,6 +36,11 @@ Available when `PUREGYM_USERNAME` and `PUREGYM_PASSWORD` are configured:
 - `Anonymous mode` exposes read-only tools and uses a 14-day search window.
 - `Authenticated mode` unlocks booking tools and expands the default search window to 28 days.
 
+## Breaking Changes in v0.3.0
+
+- `book_class` and `cancel_booking` MCP tools now return snake_case field names (`participation_id` instead of `participationId`)
+- This aligns the MCP output with the internal Python API for consistency
+
 ## Quickstart
 
 For most users, the easiest setup is local `stdio` usage from an MCP-compatible client:
@@ -89,8 +94,24 @@ The package also exposes a reusable client and service layer:
 ```python
 from puregym_mcp import PureGymClient, PureGymService
 
+# Anonymous client
 client = PureGymClient()
+
+# Authenticated client with custom timeout
+client = PureGymClient(
+    username="your-username",
+    password="your-password",
+    timeout=30.0  # seconds
+)
+
 service = PureGymService(client)
+
+# Book and cancel return typed results
+result = await service.book_class(booking_id, activity_id, payment_type)
+print(result.participation_id)  # snake_case field
+
+cancel_result = await service.cancel_booking(participation_id)
+print(cancel_result.status)
 ```
 
 ## Docker
@@ -151,7 +172,13 @@ uv build
 Test the built package locally before publishing:
 
 ```bash
-uvx --from dist/puregym_mcp-0.2.0-py3-none-any.whl puregym-mcp --transport stdio
+uvx --from dist/puregym_mcp-0.3.0-py3-none-any.whl puregym-mcp --transport stdio
+```
+
+Run real API integration tests (requires credentials):
+
+```bash
+PUREGYM_USERNAME=your-username PUREGYM_PASSWORD=your-password uv run pytest tests/real_api -m real_api
 ```
 
 ## MCP Inspector

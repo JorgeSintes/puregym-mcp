@@ -54,3 +54,9 @@ dev = [
 
 [tool.ruff]
 line-length = 110
+
+[tool.pytest.ini_options]
+addopts = ["-v"]
+markers = [
+    "real_api: marks tests that run against the real PureGym API (requires credentials)",
+]

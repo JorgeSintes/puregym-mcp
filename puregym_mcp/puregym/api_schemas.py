@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class ApiSchema(BaseModel):
@@ -81,7 +81,7 @@ class ApiOpeningHoursEntry(ApiSchema):
 
 
 class ApiCenterSummary(ApiSchema):
-    id: int
+    id: int | None = None
     cid: str | int | None = None
     slug: str | None = None
     shortname: str | None = None
@@ -129,6 +129,13 @@ class ApiSearchClass(ApiSchema):
     state: str | None = None
     participationListIndex: int | None = None
 
+    @field_validator("participation", mode="before")
+    @classmethod
+    def _normalize_participation(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            return ApiParticipationKey(participation_id=v)
+        return v
+
 
 class ApiBookedClass(ApiSchema):
     booking: ApiSearchClass
@@ -155,7 +162,7 @@ class ApiCenterCapacity(ApiSchema):
 
 
 class ApiCenterStats(ApiSchema):
-    id: int
+    id: int | None = None
     cid: str | int | None = None
     slug: str | None = None
     webname: str | None = None

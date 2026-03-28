@@ -25,10 +25,15 @@ APP_USER_AGENT = "okhttp/5.1.0"
 
 
 class PureGymClient:
-    def __init__(self, username: str | None = None, password: str | None = None):
+    def __init__(
+        self,
+        username: str | None = None,
+        password: str | None = None,
+        timeout: float | None = None,
+    ):
         self.username = username
         self.password = password
-        self.client = httpx.AsyncClient(follow_redirects=True)
+        self.client = httpx.AsyncClient(follow_redirects=True, timeout=timeout)
 
     @property
     def has_credentials(self) -> bool:

@@ -2,7 +2,7 @@ FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock LICENSE README.md ./
 COPY puregym_mcp ./puregym_mcp
 
 RUN uv sync --frozen --no-dev

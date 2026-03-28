@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 
 from puregym_mcp.puregym.client import PureGymClient
 from puregym_mcp.puregym.models import (
+    BookClassResult,
+    CancelBookingResult,
     CenterGroup,
     CenterLiveStatus,
     CenterOpeningHours,
@@ -74,12 +76,12 @@ class PureGymService:
             filtered = [booking for booking in filtered if booking.date <= to_date]
         return filtered
 
-    async def book_class(self, booking_id: str, activity_id: int, payment_type: str) -> dict:
+    async def book_class(self, booking_id: str, activity_id: int, payment_type: str) -> BookClassResult:
         if not self.is_authenticated:
             raise ValueError("Authenticated PureGym credentials are required to create bookings")
         return await self.client.book_by_ids(booking_id, activity_id, payment_type)
 
-    async def cancel_booking(self, participation_id: str) -> dict:
+    async def cancel_booking(self, participation_id: str) -> CancelBookingResult:
         if not self.is_authenticated:
             raise ValueError("Authenticated PureGym credentials are required to cancel bookings")
         return await self.client.unbook_participation(participation_id)

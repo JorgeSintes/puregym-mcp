@@ -5,7 +5,9 @@ from datetime import datetime
 from pydantic import BaseModel, computed_field
 
 from puregym_mcp.puregym.api_schemas import (
+    ApiBookClassResponse,
     ApiBookedClass,
+    ApiCancelBookingResponse,
     ApiCenterCapacityPoint,
     ApiCenterStats,
     ApiOpeningHoursEntry,
@@ -203,3 +205,23 @@ class CenterCapacityPoint(BaseModel):
         from puregym_mcp.puregym.adapters import adapt_center_capacity_point
 
         return cls(**adapt_center_capacity_point(item))
+
+
+class BookClassResult(BaseModel):
+    status: str
+    participation_id: str | None = None
+
+    @classmethod
+    def from_api(cls, item: ApiBookClassResponse) -> "BookClassResult":
+        return cls(
+            status=item.status,
+            participation_id=item.participationId,
+        )
+
+
+class CancelBookingResult(BaseModel):
+    status: str
+
+    @classmethod
+    def from_api(cls, item: ApiCancelBookingResponse) -> "CancelBookingResult":
+        return cls(status=item.status)

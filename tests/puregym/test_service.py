@@ -3,6 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from puregym_mcp.puregym.models import BookClassResult, CancelBookingResult
 from puregym_mcp.puregym.service import PureGymService
 
 
@@ -30,11 +31,11 @@ class FakeClient:
 
     async def book_by_ids(self, booking_id: str, activity_id: int, payment_type: str):
         self.book_calls.append((booking_id, activity_id, payment_type))
-        return {"status": "success", "participationId": "pid-1"}
+        return BookClassResult(status="success", participation_id="pid-1")
 
     async def unbook_participation(self, participation_id: str):
         self.cancel_calls.append(participation_id)
-        return {"status": "success"}
+        return CancelBookingResult(status="success")
 
     async def aclose(self):
         return None
@@ -90,8 +91,8 @@ async def test_book_and_cancel_delegate_to_client():
     booked = await service.book_class("b-1", 11, "membership")
     cancelled = await service.cancel_booking("pid-1")
 
-    assert booked["status"] == "success"
-    assert cancelled["status"] == "success"
+    assert booked.status == "success"
+    assert cancelled.status == "success"
     assert client.book_calls == [("b-1", 11, "membership")]
     assert client.cancel_calls == ["pid-1"]
 

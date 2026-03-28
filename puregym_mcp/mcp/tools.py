@@ -52,12 +52,14 @@ def register_tools(mcp, service: PureGymService) -> None:
     @mcp.tool()
     async def book_class(booking_id: str, activity_id: int, payment_type: str) -> dict:
         """Book a class or join its waitlist using the identifiers returned by search results."""
-        return await service.book_class(booking_id, activity_id, payment_type)
+        result = await service.book_class(booking_id, activity_id, payment_type)
+        return result.model_dump(mode="json")
 
     @mcp.tool()
     async def cancel_booking(participation_id: str) -> dict:
         """Cancel an existing booking or waitlist entry using its participation id."""
-        return await service.cancel_booking(participation_id)
+        result = await service.cancel_booking(participation_id)
+        return result.model_dump(mode="json")
 
     @mcp.tool()
     async def get_center_live_status(center_id: int) -> dict:

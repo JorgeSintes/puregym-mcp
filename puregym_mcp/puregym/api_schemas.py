@@ -192,3 +192,12 @@ class ApiUserMe(ApiSchema):
 class ApiDataEnvelope(ApiSchema):
     data: Any
     status: str
+
+
+class ApiBookClassResponse(ApiSchema):
+    status: str
+    participationId: str | None = None
+
+
+class ApiCancelBookingResponse(ApiSchema):
+    status: str

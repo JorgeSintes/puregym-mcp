@@ -6,8 +6,17 @@ from typing import Any
 
 import httpx
 
-from puregym_mcp.puregym.api_schemas import ApiBookedClass, ApiCenterStats, ApiDataEnvelope, ApiSearchClass
+from puregym_mcp.puregym.api_schemas import (
+    ApiBookClassResponse,
+    ApiBookedClass,
+    ApiCancelBookingResponse,
+    ApiCenterStats,
+    ApiDataEnvelope,
+    ApiSearchClass,
+)
 from puregym_mcp.puregym.models import (
+    BookClassResult,
+    CancelBookingResult,
     CenterGroup,
     CenterLiveStatus,
     CenterOpeningHours,
@@ -155,21 +164,25 @@ class PureGymClient:
     async def get_center_open_hours(self, center_id: int) -> list[CenterOpeningHours]:
         return (await self.get_center_live_status(center_id)).opening_hours
 
-    async def book_by_ids(self, booking_id: str, activity_id: int, payment_type: str) -> Any:
-        return await self._request_app_json(
+    async def book_by_ids(self, booking_id: str, activity_id: int, payment_type: str) -> BookClassResult:
+        raw_data = await self._request_app_json(
             "POST",
             "/bookings/book",
             content_type="application/x-www-form-urlencoded",
             data={"bookingId": booking_id, "activityId": activity_id},
         )
+        api_response = ApiBookClassResponse.model_validate(raw_data)
+        return BookClassResult.from_api(api_response)
 
-    async def unbook_participation(self, participation_id: str) -> Any:
-        return await self._request_app_json(
+    async def unbook_participation(self, participation_id: str) -> CancelBookingResult:
+        raw_data = await self._request_app_json(
             "POST",
             "/bookings/cancelBook",
             content_type="application/x-www-form-urlencoded",
             data={"participationId": participation_id},
         )
+        api_response = ApiCancelBookingResponse.model_validate(raw_data)
+        return CancelBookingResult.from_api(api_response)
 
     async def aclose(self) -> None:
         await self.client.aclose()

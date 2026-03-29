@@ -34,7 +34,7 @@ def build_server(
     # Build token verifier for HTTP transports (Simple Auth with static Bearer token)
     token_verifier = None
     auth = None
-    if transport in ("sse", "streamable-http"):
+    if transport in ("sse", "streamable-http") and client.has_credentials:
         mcp_token = os.getenv("MCP_AUTH_TOKEN")
         if mcp_token is None:
             raise ValueError("MCP_AUTH_TOKEN environment variable is required for authenticated transports")

@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -12,4 +12,7 @@ def get_capabilities() -> McpCapabilities:
     username = os.getenv("PUREGYM_USERNAME")
     password = os.getenv("PUREGYM_PASSWORD")
     authenticated = bool(username and password)
-    return McpCapabilities(authenticated=authenticated, search_days_allowed=28 if authenticated else 14)
+    return McpCapabilities(
+        authenticated=authenticated,
+        search_days_allowed=28 if authenticated else 14,
+    )

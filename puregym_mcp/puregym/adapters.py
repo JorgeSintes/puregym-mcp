@@ -112,7 +112,7 @@ def adapt_gym_class_from_search(item: ApiSearchClass) -> dict:
 def adapt_gym_class_from_booking(item: ApiBookedClass) -> dict:
     """Adapt ApiBookedClass to GymClass constructor kwargs."""
     booking = item.booking
-    center = booking.center
+    center = item.center
     participation = item.participationId
     return {
         "date": booking.date,
@@ -124,7 +124,9 @@ def adapt_gym_class_from_booking(item: ApiBookedClass) -> dict:
         "payment_type": item.payment_type or booking.payment_type or "free",
         "participation_id": participation.participation_id if participation else None,
         "instructor": booking.instructorName or "",
-        "location": booking.roomName or ((center.centerName or center.webname) if center else "") or "",
+        "location": booking.roomName
+        or ((center.centerName or center.webname) if center else "")
+        or "",
         "center_id": _coerce_int(center.cid) if center else None,
         "center_name": (center.centerName or center.webname or "") if center else "",
         "center_url": _build_center_url(center.slug if center else None),
@@ -133,7 +135,9 @@ def adapt_gym_class_from_booking(item: ApiBookedClass) -> dict:
         "level": booking.activity.level,
         "booked_count": item.bookedCount,
         "class_capacity": item.classCapacity,
-        "waitlist_position": None if item.state == "BOOKED" else item.participationListIndex,
+        "waitlist_position": None
+        if item.state == "BOOKED"
+        else item.participationListIndex,
         "waitlist_size": item.waitingListCount,
         "can_cancel": item.can_cancel,
         "state": item.state,
@@ -187,7 +191,9 @@ def adapt_center_live_status(item: ApiCenterStats) -> dict:
         "email": item.email,
         "geo_lat": float(item.geo_lat or 0.0),
         "geo_lng": float(item.geo_lng or 0.0),
-        "opening_hours": [CenterOpeningHours.from_api(entry) for entry in item.opening_hours],
+        "opening_hours": [
+            CenterOpeningHours.from_api(entry) for entry in item.opening_hours
+        ],
         "people_in_center": item.capacity.people_in_center,
         "max_capacity": item.capacity.max_capacity,
         "capacity_status": item.capacity.capacity_status,

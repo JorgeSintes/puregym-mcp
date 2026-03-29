@@ -146,6 +146,7 @@ class ApiBookedClass(ApiSchema):
     classCapacity: int | None = None
     waitingListCount: int | None = None
     can_cancel: bool | None = None
+    center: ApiCenterSummary | None = None
     payment_type: str | None = None
 
 

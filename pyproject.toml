@@ -8,7 +8,7 @@ module-root = ""
 
 [project]
 name = "puregym-mcp"
-version = "0.3.1"
+version = "0.4.0"
 description = "PureGym Python client and MCP server for class discovery and booking management"
 readme = "README.md"
 license = { file = "LICENSE" }

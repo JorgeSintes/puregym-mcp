@@ -122,7 +122,7 @@
     <main class="prose-shell mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-12">
       <header class="mb-12">
         <div class="mb-4 flex flex-wrap items-center gap-3 text-xs">
-          <span class="rounded border border-slate-200 bg-slate-100 px-2 py-0.5 font-bold uppercase tracking-[0.16em] text-slate-600">v0.3.1</span>
+          <span class="rounded border border-slate-200 bg-slate-100 px-2 py-0.5 font-bold uppercase tracking-[0.16em] text-slate-600">v0.4.0</span>
           <span class="text-slate-300">•</span>
           <span class="text-slate-500">Hosted endpoint: <code class="rounded bg-slate-50 px-1 text-primary">/mcp</code></span>
           <span class="text-slate-300">•</span>
@@ -210,7 +210,7 @@
 
         <div class="my-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
-            <span class="text-xs font-mono text-slate-500">basic-config</span>
+            <span class="text-xs font-mono text-slate-500">opencode.json</span>
             <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy install commands">
               <span class="material-symbols-outlined text-sm">content_copy</span>
             </button>
@@ -242,7 +242,7 @@
         <div class="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-panel">
           <h3 class="mb-2 text-base font-bold text-slate-900">Public read-only endpoint</h3>
           <p class="mb-3 text-sm leading-7 text-slate-600">
-            A non-authenticated read-only deployment is currently available at
+            A non-authenticated read-only deployment is available at
             <button
               class="copy-button inline-flex items-center gap-2 rounded border border-slate-200 bg-white px-2 py-1 font-mono text-xs text-primary transition-colors hover:border-primary hover:text-primary"
               type="button"
@@ -251,49 +251,89 @@
             >
               <span>https://puregym-mcp.jorgesintes.dev/mcp</span>
               <span class="material-symbols-outlined text-sm">content_copy</span>
-            </button>
+            </button> for class discovery only, no booking capabilities.
           </p>
           <p class="mb-0 text-sm leading-7 text-slate-600">
-            This is the kind of remote deployment that enables services such as
-            <a class="text-primary hover:underline" href="https://chatgpt.com" target="_blank" rel="noreferrer">ChatGPT</a>,
-            <a class="text-primary hover:underline" href="https://claude.ai" target="_blank" rel="noreferrer">Claude</a>, and
+             To deploy your own authenticated server with booking
+            permissions, use the Bearer token configuration shown above and connect via
             <a class="text-primary hover:underline" href="https://mistral.ai" target="_blank" rel="noreferrer">Mistral</a>
-            to connect through custom MCP integrations when supported by their plans and client capabilities.
+            or other MCP clients that support HTTP Bearer Token authentication.
           </p>
         </div>
 
-        <div class="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-6 shadow-panel">
-          <h3 class="mb-2 text-base font-bold text-amber-900">Security warning</h3>
-          <p class="mb-3 text-sm leading-7 text-amber-900/90">
-            Do not expose a publicly reachable deployment configured with your personal PureGym credentials on an open port.
-            If a hosted MCP has booking permissions, anyone who can reach it may be able to act on your account unless the
-            deployment is protected properly.
+        <div class="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-6 shadow-panel">
+          <h3 class="mb-2 text-base font-bold text-emerald-900">Authentication available</h3>
+          <p class="mb-3 text-sm leading-7 text-emerald-900/90">
+            HTTP transports now support Bearer token authentication. When deploying with <code>streamable-http</code> or
+            <code>sse</code>, set <code>MCP_AUTH_TOKEN</code> alongside your PureGym credentials.
           </p>
-          <p class="mb-0 text-sm leading-7 text-amber-900/90">
-            Public hosting should stay anonymous and read-only unless access control is in place. Remote MCP clients are
-            increasingly adding authenticated server support, and I am currently working on making auth easier to configure
-            here as well. More documentation on that setup will be added soon.
+          <p class="mb-0 text-sm leading-7 text-emerald-900/90">
+            Connect from MCP clients using <strong>Simple Auth</strong> or <strong>HTTP Bearer Token</strong>. The token never
+            expires—it's a static secret you control. Rotate it by restarting the server with a new value.
           </p>
         </div>
 
         <div class="mt-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
-            <span class="text-xs font-mono text-slate-500">streamable-http</span>
+            <span class="text-xs font-mono text-slate-500">deploy server</span>
             <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy streamable HTTP command">
               <span class="material-symbols-outlined text-sm">content_copy</span>
             </button>
           </div>
-          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">puregym-mcp --transport streamable-http --host 0.0.0.0 --port 8000 --streamable-http-path /mcp</code></pre>
+          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">export PUREGYM_USERNAME="your-email@example.com"
+export PUREGYM_PASSWORD="your-password"
+export MCP_AUTH_TOKEN="your-secret-bearer-token"
+
+# Run on streamable HTTP
+puregym-mcp --transport streamable-http --host 0.0.0.0 --port 8000 --streamable-http-path /mcp
+
+# Or SSE
+puregym-mcp --transport sse --host 0.0.0.0 --port 8000 --sse-path /sse --message-path /messages/</code></pre>
+        </div>
+        <div>
+     <p class="mt-4 text-slate-600">
+Or if you prefer Docker, clone <a class="text-primary hover:underline" href="https://github.com/JorgeSintes/puregym-mcp" target="_blank" rel="noreferrer">the repo</a>, and add
+the following `.env` and `compose.yml` files:
+     </p> 
+
+        </div>
+
+        <div class="mt-2 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
+            <span class="text-xs font-mono text-slate-500">.env (never commit this)</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy env file">
+              <span class="material-symbols-outlined text-sm">content_copy</span>
+            </button>
+          </div>
+<pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">PUREGYM_USERNAME=your-email@example.com
+PUREGYM_PASSWORD=your-password
+MCP_AUTH_TOKEN=your-secret-bearer-token-min-16-chars-recommended</code></pre>
         </div>
 
         <div class="mt-6 overflow-hidden rounded-lg border border-slate-200 shadow-sm">
           <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-2">
-            <span class="text-xs font-mono text-slate-500">sse</span>
-            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy SSE command">
+            <span class="text-xs font-mono text-slate-500">docker-compose.yml</span>
+            <button class="copy-button text-slate-400 transition-colors hover:text-slate-600" type="button" aria-label="Copy Docker compose">
               <span class="material-symbols-outlined text-sm">content_copy</span>
             </button>
           </div>
-          <pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-bash">puregym-mcp --transport sse --host 0.0.0.0 --port 8000 --sse-path /sse --message-path /messages/</code></pre>
+
+<pre class="m-0 overflow-x-auto bg-slate-900 p-5 text-sm text-slate-100"><code class="language-yaml">services:
+  puregym-mcp:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    command:
+      - --transport
+      - streamable-http
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --streamable-http-path
+      - /mcp</code></pre>
         </div>
       </section>
 

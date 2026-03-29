@@ -1,8 +1,10 @@
 # PureGym MCP
 
-`puregym-mcp` is a Python package and Model Context Protocol server for browsing PureGym centers in Denmark, discovering classes, checking your bookings, and managing bookings from MCP-compatible clients.
+`puregym-mcp` is a Python package and Model Context Protocol server for browsing PureGym centers in Denmark,
+discovering classes, checking your bookings, and managing bookings from MCP-compatible clients.
 
-This is an independent third-party project and is not affiliated with, endorsed by, or sponsored by PureGym. PureGym is a registered trademark of Pure Gym Limited.
+This is an independent third-party project and is not affiliated with, endorsed by, or sponsored by PureGym.
+PureGym is a registered trademark of Pure Gym Limited.
 
 - Docs: [puregym-mcp.jorgesintes.dev](https://puregym-mcp.jorgesintes.dev)
 - Public read-only endpoint: `https://puregym-mcp.jorgesintes.dev/mcp`
@@ -36,10 +38,21 @@ Available when `PUREGYM_USERNAME` and `PUREGYM_PASSWORD` are configured:
 - `Anonymous mode` exposes read-only tools and uses a 14-day search window.
 - `Authenticated mode` unlocks booking tools and expands the default search window to 28 days.
 
-## Breaking Changes in v0.3.0
+## Authentication for HTTP Transports
 
-- `book_class` and `cancel_booking` MCP tools now return snake_case field names (`participation_id` instead of `participationId`)
-- This aligns the MCP output with the internal Python API for consistency
+When running over `streamable-http` or `sse` transports, the server requires Bearer token authentication in
+addition to PureGym credentials. This prevents unauthorized access to your booking capabilities when exposing
+the MCP server remotely.
+
+**Required environment variables for HTTP transports:**
+
+- `PUREGYM_USERNAME` - Your PureGym account email
+- `PUREGYM_PASSWORD` - Your PureGym account password
+- `MCP_AUTH_TOKEN` - A secret Bearer token you choose (e.g., a random string)
+
+**Note:** `stdio` transport requires no authentication and runs unauthenticated by default.
+
+Connect from MCP clients (e.g., Mistral) using Simple Auth / HTTP Bearer Token with your `MCP_AUTH_TOKEN`.
 
 ## Quickstart
 
@@ -67,25 +80,58 @@ The environment block is optional and only needed for authenticated features.
 
 The server supports both `streamable-http` and `sse` for remote MCP clients.
 
-Public read-only hosting:
+### Bearer Token Authentication
 
-- Hosted endpoint: `https://puregym-mcp.jorgesintes.dev/mcp`
-- Prefer anonymous mode for public deployments.
-
-Security note:
-
-- Do not expose a publicly reachable deployment configured with your personal PureGym credentials.
-- Keep authenticated deployments private unless you have proper access control in front of them.
-
-Example commands:
+HTTP transports (`streamable-http`, `sse`) require Bearer token authentication to protect your booking
+capabilities:
 
 ```bash
+export PUREGYM_USERNAME="your-email@example.com"
+export PUREGYM_PASSWORD="your-password"
+export MCP_AUTH_TOKEN="your-secret-bearer-token"
+
 puregym-mcp --transport streamable-http --host 0.0.0.0 --port 8000 --streamable-http-path /mcp
 ```
 
-```bash
-puregym-mcp --transport sse --host 0.0.0.0 --port 8000 --sse-path /sse --message-path /messages/
+Connect from MCP clients using **Simple Auth** or **HTTP Bearer Token** authentication with your
+`MCP_AUTH_TOKEN`.
+
+### Docker Compose Example
+
+```yaml
+services:
+  puregym-mcp:
+    image: puregym-mcp
+    environment:
+      - PUREGYM_USERNAME=${PUREGYM_USERNAME}
+      - PUREGYM_PASSWORD=${PUREGYM_PASSWORD}
+      - MCP_AUTH_TOKEN=${MCP_AUTH_TOKEN}
+    ports:
+      - "8000:8000"
+    command:
+      - --transport
+      - streamable-http
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --streamable-http-path
+      - /mcp
 ```
+
+Store sensitive values in a `.env` file (never commit this file):
+
+```env
+PUREGYM_USERNAME=your-email@example.com
+PUREGYM_PASSWORD=your-password
+MCP_AUTH_TOKEN=your-secret-bearer-token-min-16-chars-recommended
+```
+
+### Public Read-Only Hosting
+
+- Hosted endpoint: `https://puregym-mcp.jorgesintes.dev/mcp`
+- Runs in anonymous mode (no booking capabilities)
+- Use this for public class discovery only
 
 ## Python Library
 
@@ -128,12 +174,13 @@ Run a public read-only server:
 docker run --rm -p 8000:8000 puregym-mcp
 ```
 
-Run a private authenticated server:
+Run a private authenticated server (HTTP transport with Bearer token auth):
 
 ```bash
 docker run --rm -p 8000:8000 \
   -e PUREGYM_USERNAME=your-email \
   -e PUREGYM_PASSWORD=your-password \
+  -e MCP_AUTH_TOKEN=your-secret-token \
   puregym-mcp
 ```
 
